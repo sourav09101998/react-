@@ -1,84 +1,60 @@
 import React, { useState } from 'react';
-
+import ToDoLists from './ToDoLists';
 
 
 const App = () => {
-    const[fullName,setFullName] =useState({
-        fname: "",
-        lname: "",
-        email: "",
-        phone: "",
+
+    const [inputList, setInputList] = useState("");
+    const [Items, setItems] = useState([]);
 
 
-    });
 
-    const inputEvent =(event) =>{
-        console.log(event.target.value);
-        console.log(event.target.name);
+    const itemEvent = (event) => {
+        setInputList(event.target.value);
+    };
 
-        const { name, value } = event.target;
-
-        setFullName((preValue) => {
-            console.log(preValue);
-            return{
-                ...preValue,
-                [name]:value,
-            }
+    const listOfItems = () => {
+        setItems((oldItems) => {
+            return [...oldItems, inputList];
         });
-
+        setInputList("");
     };
 
-    const onSubmit =(event) =>{
-        event.preventDefault();
-        alert("form submitted");
-    };
+    const deleteItems = (id) => {
+        setItems((oldItems) => {
+            return oldItems.filter((arrElem, index) => {
+                return index !== id;
+            })
+        })
+    }
 
-    return(
+    return (
         <>
-            <div className="main_div">
-                <form onSubmit={onSubmit}>
-                    <div>
-                        <h1>Hello {fullName.fname} {fullName.lname} </h1>
-                        <p> {fullName.email} </p>
-                        <p> {fullName.phone} </p>
-                        <input
-                            type="text"
-                            placeholder="Enter your First Name"
-                            name="fname"
-                            onChange={inputEvent}
-                            value={fullName.fname}
-                        />
-                        <br/>    
-                        <input
-                            type="text"
-                            placeholder="Enter your last Name"
-                            name="lname"
-                            onChange={inputEvent}
-                            value={fullName.lname}
-                        />
-                        <br/>    
-                        <input
-                            type="text"
-                            placeholder="Enter your email"
-                            name="email"
-                            onChange={inputEvent}
-                            value={fullName.email}
-                        />
-                        <br/>    
-                        <input
-                            type="text"
-                            placeholder="Enter your phone no"
-                            name="phone"
-                            onChange={inputEvent}
-                            value={fullName.phone}
-                        />
-                        <br/>    
-                        <button type="submit">Submit 👍 </button>
-                    </div>
-                </form>
+            <div className='main_div'>
+                <div className='center_div'>
+                    <br />
+                    <h1> ToDo List </h1>
+                    <br />
+                    <input type='text' placeholder="Add a Items" value={inputList} onChange={itemEvent} />
+                    <button onClick={listOfItems} > + </button>
+
+                    <ol>
+                        {Items.map((itemval, index) => {
+                            return (
+                                <ToDoLists
+                                    key={index}
+                                    id={index}
+                                    text={itemval}
+                                    onSelect={deleteItems}
+                                />
+                            );
+                        })
+                        }
+                    </ol>
+                </div>
             </div>
         </>
     )
-    
+
 }
 export default App;
